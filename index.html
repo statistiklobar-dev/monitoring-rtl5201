@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Monitoring RTL BPS Lombok Barat</title>
+  <style>
+    :root {
+      --primary-color: #D81B60; 
+      --primary-light: #FCE4EC; 
+      --border-color: #E0E0E0; 
+      --text-color: #333333;
+    }
+    
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background-color: #ffffff; 
+      color: var(--text-color);
+      margin: 0;
+      padding: 20px;
+      font-size: 13px; 
+    }
+
+    .app-title { font-size: 20px; font-weight: bold; color: var(--primary-color); margin-bottom: 5px; }
+    .app-subtitle { font-size: 14px; color: #666; margin-bottom: 25px; padding-bottom: 10px; border-bottom: 2px solid var(--primary-color); }
+
+    .filter-container { display: none; margin-bottom: 20px; width: 100%; max-width: 800px; }
+    .filter-row { display: flex; align-items: center; margin-bottom: 10px; }
+    .filter-label { width: 180px; flex-shrink: 0; font-size: 13px; color: #555; font-weight: bold; }
+    .filter-input { flex-grow: 1; }
+    .filter-input select { width: 100%; padding: 6px 10px; border: 1px solid #ccc; border-radius: 3px; font-size: 13px; color: #333; outline: none; }
+    .filter-input select:focus { border-color: var(--primary-color); }
+
+    .table-responsive { overflow-x: auto; overflow-y: auto; max-height: 65vh; border: 1px solid var(--border-color); border-radius: 4px; }
+    table { width: 100%; border-collapse: collapse; }
+    th { background-color: var(--primary-color); color: white; position: sticky; top: 0; z-index: 10; text-align: center; padding: 10px 8px; font-weight: normal; font-size: 13px; border-right: 1px solid rgba(255, 255, 255, 0.2); }
+    th:last-child { border-right: none; }
+    td { padding: 8px 10px; border-bottom: 1px solid var(--border-color); border-right: 1px solid var(--border-color); vertical-align: top; word-wrap: break-word; white-space: normal; line-height: 1.4; }
+    td:last-child { border-right: none; }
+    tr:nth-child(even) td { background-color: var(--primary-light); }
+    tr:nth-child(odd) td { background-color: #ffffff; }
+    tr:hover td { background-color: #F8BBD0; }
+
+    .highlight-rtl { background-color: #F8BBD0 !important; color: #880E4F !important; font-weight: 600 !important; border-left: 2px solid var(--primary-color) !important; border-right: 2px solid var(--primary-color) !important; }
+    .highlight-rtl-header { background-color: #AD144D !important; font-weight: bold; border-left: 2px solid #FF4081 !important; border-right: 2px solid #FF4081 !important; }
+
+    th:nth-child(1), td:nth-child(1) { min-width: 180px; max-width: 220px; } 
+    th:nth-child(2), td:nth-child(2) { min-width: 180px; max-width: 220px; } 
+    th:nth-child(3), td:nth-child(3) { min-width: 180px; max-width: 220px; } 
+    th:nth-child(4), td:nth-child(4), th:nth-child(5), td:nth-child(5) { min-width: 80px; text-align: center; } 
+    th:nth-child(6), td:nth-child(6), th:nth-child(7), td:nth-child(7), th:nth-child(8), td:nth-child(8) { min-width: 200px; max-width: 300px; } 
+    th:nth-child(9), td:nth-child(9) { min-width: 120px; } 
+    th:nth-child(10), td:nth-child(10) { min-width: 100px; text-align: center; } 
+    th:nth-child(11), td:nth-child(11), th:nth-child(12), td:nth-child(12), th:nth-child(13), td:nth-child(13) { min-width: 100px; text-align: center; vertical-align: middle; }
+
+    .btn-link { display: inline-block; padding: 4px 8px; border: 1px solid var(--primary-color); color: var(--primary-color); background-color: transparent; text-decoration: none; border-radius: 3px; font-size: 12px; font-weight: bold; transition: all 0.2s; white-space: nowrap; }
+    .btn-link:hover { background-color: var(--primary-color); color: white; }
+    .loading { text-align: left; font-size: 14px; color: #666; padding: 20px 0; font-style: italic; }
+  </style>
+</head>
+<body>
+
+  <div>
+    <div class="app-title">Monitoring Bukti Dukung Rencana Tindak Lanjut Capaian Kinerja Triwulanan</div>
+    <div class="app-subtitle">Satker : BPS Kabupaten Lombok Barat</div>
+  </div>
+
+  <div class="filter-container" id="filterContainer">
+    <div class="filter-row">
+      <div class="filter-label">Tahun</div>
+      <div class="filter-input"><select id="filterTahun" onchange="handleFilterChange(1)"></select></div>
+    </div>
+    <div class="filter-row">
+      <div class="filter-label">Triwulan</div>
+      <div class="filter-input"><select id="filterTriwulan" onchange="handleFilterChange(2)"></select></div>
+    </div>
+    <div class="filter-row">
+      <div class="filter-label">Tujuan</div>
+      <div class="filter-input"><select id="filterTujuan" onchange="handleFilterChange(3)"></select></div>
+    </div>
+    <div class="filter-row">
+      <div class="filter-label">Sasaran</div>
+      <div class="filter-input"><select id="filterSasaran" onchange="handleFilterChange(4)"></select></div>
+    </div>
+    <div class="filter-row">
+      <div class="filter-label">Indikator Kinerja</div>
+      <div class="filter-input"><select id="filterIndikator" onchange="handleFilterChange(5)"></select></div>
+    </div>
+  </div>
+
+  <div id="loading" class="loading">Mengambil data dari server...</div>
+
+  <div class="table-responsive" id="tableWrapper" style="display: none;">
+    <table id="dataTable">
+      <thead id="tableHead"></thead>
+      <tbody id="tableBody"></tbody>
+    </table>
+  </div>
+
+  <script>
+    // MASUKKAN URL APPS SCRIPT ANDA DI SINI
+    const API_URL = "https://script.google.com/macros/s/AKfycbwz5_mD31fV8TLle2WUKaIsHQwPj73IEYn0YLZKshiy0uSNoyvFWba1ORvQZfpI7mrJ/exec";
+
+    let globalData = [];
+    let headers = [];
+
+    const filterTexts = {
+      'filterTahun': 'Tampilkan Seluruh Tahun',
+      'filterTriwulan': 'Tampilkan Seluruh Triwulan',
+      'filterTujuan': 'Tampilkan Seluruh Tujuan',
+      'filterSasaran': 'Tampilkan Seluruh Sasaran',
+      'filterIndikator': 'Tampilkan Seluruh Indikator Kinerja'
+    };
+
+    window.onload = function() {
+      // Menggunakan fetch API untuk mengambil data dari Google Apps Script
+      fetch(API_URL)
+        .then(response => response.json())
+        .then(data => processData(data))
+        .catch(error => {
+          document.getElementById('loading').innerHTML = "Gagal memuat data. Pastikan URL API benar dan Sheet memiliki akses publik.";
+          console.error("Error fetching data: ", error);
+        });
+    };
+
+    function processData(data) {
+      if (data && data.length > 0) {
+        headers = data[0]; 
+        globalData = data.slice(1); 
+
+        let tahunSet = new Set();
+        globalData.forEach(row => { if(row[4]) tahunSet.add(row[4]); });
+        
+        updateSelectOptions('filterTahun', Array.from(tahunSet).sort(), 'Semua');
+        handleFilterChange(1);
+
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('filterContainer').style.display = 'block';
+        document.getElementById('tableWrapper').style.display = 'block';
+      } else {
+        document.getElementById('loading').innerHTML = "Data kosong atau tidak ditemukan.";
+      }
+    }
+
+    function updateSelectOptions(elementId, optionsArr, currentValue) {
+      let select = document.getElementById(elementId);
+      select.innerHTML = ''; 
+
+      let optDefault = document.createElement('option');
+      optDefault.value = 'Semua';
+      optDefault.textContent = filterTexts[elementId];
+      select.appendChild(optDefault);
+
+      let valueStillValid = false;
+
+      optionsArr.forEach(opt => {
+        let el = document.createElement('option');
+        el.value = opt;
+        el.textContent = opt;
+        select.appendChild(el);
+        if(opt === currentValue) valueStillValid = true;
+      });
+
+      if (valueStillValid) select.value = currentValue;
+      else select.value = 'Semua';
+    }
+
+    function handleFilterChange(levelChanged) {
+      let valTahun = document.getElementById('filterTahun').value;
+      let valTriwulan = document.getElementById('filterTriwulan') ? document.getElementById('filterTriwulan').value : 'Semua';
+      let valTujuan = document.getElementById('filterTujuan') ? document.getElementById('filterTujuan').value : 'Semua';
+      let valSasaran = document.getElementById('filterSasaran') ? document.getElementById('filterSasaran').value : 'Semua';
+      let valIndikator = document.getElementById('filterIndikator') ? document.getElementById('filterIndikator').value : 'Semua';
+
+      if (levelChanged <= 1) {
+        let validTriwulan = new Set();
+        globalData.forEach(row => { if (valTahun === 'Semua' || row[4] === valTahun) { if (row[5]) validTriwulan.add(row[5]); } });
+        updateSelectOptions('filterTriwulan', Array.from(validTriwulan).sort(), valTriwulan);
+        valTriwulan = document.getElementById('filterTriwulan').value; 
+      }
+
+      if (levelChanged <= 2) {
+        let validTujuan = new Set();
+        globalData.forEach(row => {
+          let match1 = (valTahun === 'Semua' || row[4] === valTahun);
+          let match2 = (valTriwulan === 'Semua' || row[5] === valTriwulan);
+          if (match1 && match2 && row[1]) validTujuan.add(row[1]);
+        });
+        updateSelectOptions('filterTujuan', Array.from(validTujuan).sort(), valTujuan);
+        valTujuan = document.getElementById('filterTujuan').value; 
+      }
+
+      if (levelChanged <= 3) {
+        let validSasaran = new Set();
+        globalData.forEach(row => {
+          let match1 = (valTahun === 'Semua' || row[4] === valTahun);
+          let match2 = (valTriwulan === 'Semua' || row[5] === valTriwulan);
+          let match3 = (valTujuan === 'Semua' || row[1] === valTujuan);
+          if (match1 && match2 && match3 && row[2]) validSasaran.add(row[2]);
+        });
+        updateSelectOptions('filterSasaran', Array.from(validSasaran).sort(), valSasaran);
+        valSasaran = document.getElementById('filterSasaran').value; 
+      }
+
+      if (levelChanged <= 4) {
+        let validIndikator = new Set();
+        globalData.forEach(row => {
+          let match1 = (valTahun === 'Semua' || row[4] === valTahun);
+          let match2 = (valTriwulan === 'Semua' || row[5] === valTriwulan);
+          let match3 = (valTujuan === 'Semua' || row[1] === valTujuan);
+          let match4 = (valSasaran === 'Semua' || row[2] === valSasaran);
+          if (match1 && match2 && match3 && match4 && row[3]) validIndikator.add(row[3]);
+        });
+        updateSelectOptions('filterIndikator', Array.from(validIndikator).sort(), valIndikator);
+      }
+
+      renderTable();
+    }
+
+    function renderTable() {
+      let filterTahun = document.getElementById('filterTahun').value;
+      let filterTriwulan = document.getElementById('filterTriwulan').value;
+      let filterTujuan = document.getElementById('filterTujuan').value;
+      let filterSasaran = document.getElementById('filterSasaran').value;
+      let filterIndikator = document.getElementById('filterIndikator').value;
+
+      let thead = document.getElementById('tableHead');
+      let tbody = document.getElementById('tableBody');
+      
+      let headHtml = '<tr>';
+      for (let i = 1; i < headers.length; i++) { 
+        if(i === 8) headHtml += '<th class="highlight-rtl-header">' + headers[i] + '</th>';
+        else headHtml += '<th>' + headers[i] + '</th>';
+      }
+      headHtml += '</tr>';
+      thead.innerHTML = headHtml;
+
+      let bodyHtml = '';
+      let rowCount = 0;
+
+      globalData.forEach(row => {
+        let matchTahun = (filterTahun === 'Semua' || row[4] === filterTahun);
+        let matchTriwulan = (filterTriwulan === 'Semua' || row[5] === filterTriwulan);
+        let matchTujuan = (filterTujuan === 'Semua' || row[1] === filterTujuan);
+        let matchSasaran = (filterSasaran === 'Semua' || row[2] === filterSasaran);
+        let matchIndikator = (filterIndikator === 'Semua' || row[3] === filterIndikator);
+
+        if (matchTahun && matchTriwulan && matchTujuan && matchSasaran && matchIndikator) {
+          rowCount++;
+          bodyHtml += '<tr>';
+          
+          for (let c = 1; c < headers.length; c++) { 
+            let cellData = row[c];
+            let highlightClass = (c === 8) ? ' class="highlight-rtl"' : ''; 
+            
+            if (c === 11 || c === 12 || c === 13) {
+              if (cellData && cellData.trim() !== '') {
+                let linkUrl = cellData.startsWith('http') ? cellData : 'https://' + cellData;
+                bodyHtml += '<td' + highlightClass + '><a href="' + linkUrl + '" target="_blank" class="btn-link">Lihat File</a></td>';
+              } else {
+                bodyHtml += '<td style="color:#aaa; text-align:center;"' + highlightClass + '>-</td>';
+              }
+            } else {
+              bodyHtml += '<td' + highlightClass + '>' + cellData + '</td>';
+            }
+          }
+          bodyHtml += '</tr>';
+        }
+      });
+
+      if (rowCount === 0) {
+        bodyHtml = '<tr><td colspan="' + (headers.length - 1) + '" style="text-align:center; padding:30px; color:#666;">Tidak ada data yang sesuai dengan filter yang dipilih.</td></tr>';
+      }
+
+      tbody.innerHTML = bodyHtml;
+    }
+  </script>
+</body>
+</html>

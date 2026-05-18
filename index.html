@@ -13,7 +13,7 @@
 
   <style>
     :root {
-      /* Warna Utama Sesuai Permintaan */
+      /* Warna Utama */
       --primary-color: #D81B60; 
       --primary-dark: #AD144D;
       --primary-light: #FCE4EC;
@@ -225,7 +225,7 @@
       border-right: 2px solid #FF4081 !important; 
     }
 
-    /* Table Column Widths (Tetap seperti aslinya) */
+    /* Table Column Widths */
     th:nth-child(1), td:nth-child(1) { min-width: 180px; max-width: 220px; } 
     th:nth-child(2), td:nth-child(2) { min-width: 180px; max-width: 220px; } 
     th:nth-child(3), td:nth-child(3) { min-width: 180px; max-width: 220px; } 
@@ -279,7 +279,7 @@
 
     /* --- Footer --- */
     .footer-section {
-      margin-top: auto; /* Push to bottom */
+      margin-top: auto; 
       text-align: center;
       padding: 25px 15px 10px 15px;
     }
@@ -310,9 +310,9 @@
     <header class="header-card">
       <img src="https://upload.wikimedia.org/wikipedia/commons/8/82/Lambang_Badan_Pusat_Statistik_%28BPS%29_Indonesia.svg" alt="Logo BPS" class="bps-logo">
       <div class="header-content">
-        <h1><i class="fa-solid fa-desktop" style="margin-right: 8px;"></i>Monitoring Bukti Dukung Rencana Tindak Lanjut</h1>
+        <h1><i class="fa-solid fa-desktop" style="margin-right: 8px;"></i>Monitoring Bukti Dukung Rencana Tindak Lanjut Capaian Kinerja Triwulanan</h1>
         <h2><i class="fa-solid fa-building" style="margin-right: 6px;"></i>Satker: BPS Kabupaten Lombok Barat</h2>
-        <p>Aplikasi ini dikembangkan untuk memfasilitasi pemantauan, evaluasi, dan penyediaan bukti dukung terhadap pelaksanaan Rencana Tindak Lanjut (RTL) secara transparan dan akuntabel di lingkungan Badan Pusat Statistik Kabupaten Lombok Barat.</p>
+        <p>Aplikasi ini dikembangkan untuk memfasilitasi pemantauan, evaluation, dan penyediaan bukti dukung terhadap pelaksanaan Rencana Tindak Lanjut (RTL) secara transparan dan akuntabel di lingkungan Badan Pusat Statistik Kabupaten Lombok Barat.</p>
       </div>
     </header>
 
@@ -524,7 +524,6 @@
             if (c === 11 || c === 12 || c === 13) {
               if (cellData && cellData.trim() !== '') {
                 let linkUrl = cellData.startsWith('http') ? cellData : 'https://' + cellData;
-                // Menambahkan icon pada tombol link
                 bodyHtml += '<td' + highlightClass + '><a href="' + linkUrl + '" target="_blank" class="btn-link"><i class="fa-solid fa-arrow-up-right-from-square"></i> Lihat File</a></td>';
               } else {
                 bodyHtml += '<td style="color:#aaa; text-align:center;"' + highlightClass + '>-</td>';

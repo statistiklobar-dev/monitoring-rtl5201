@@ -1,49 +1,213 @@
 <!DOCTYPE html>
-<html>
+<html lang="id">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Monitoring RTL BPS Lombok Barat</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
   <style>
     :root {
-      --primary-color: #D81B60; 
-      --primary-light: #FCE4EC; 
-      --border-color: #E0E0E0; 
-      --text-color: #333333;
+      /* Palette warna yang lebih modern, sedikit disesuaikan untuk nuansa korporat/instansi */
+      --primary-color: #0056b3; /* Biru BPS */
+      --primary-light: #e6f0fa;
+      --secondary-color: #D81B60; /* Warna highlight RTL Anda sebelumnya */
+      --secondary-light: #FCE4EC;
+      --background-color: #f4f7f9;
+      --card-bg: #ffffff;
+      --border-color: #e2e8f0; 
+      --text-main: #1e293b;
+      --text-muted: #64748b;
+      --radius: 8px;
     }
     
-    body {
-      font-family: 'Segoe UI', Arial, sans-serif;
-      background-color: #ffffff; 
-      color: var(--text-color);
-      margin: 0;
-      padding: 20px;
-      font-size: 13px; 
+    * {
+      box-sizing: border-box;
     }
 
-    .app-title { font-size: 20px; font-weight: bold; color: var(--primary-color); margin-bottom: 5px; }
-    .app-subtitle { font-size: 14px; color: #666; margin-bottom: 25px; padding-bottom: 10px; border-bottom: 2px solid var(--primary-color); }
+    body {
+      font-family: 'Inter', Arial, sans-serif;
+      background-color: var(--background-color); 
+      color: var(--text-main);
+      margin: 0;
+      padding: 0;
+      font-size: 14px; 
+    }
 
-    .filter-container { display: none; margin-bottom: 20px; width: 100%; max-width: 800px; }
-    .filter-row { display: flex; align-items: center; margin-bottom: 10px; }
-    .filter-label { width: 180px; flex-shrink: 0; font-size: 13px; color: #555; font-weight: bold; }
-    .filter-input { flex-grow: 1; }
-    .filter-input select { width: 100%; padding: 6px 10px; border: 1px solid #ccc; border-radius: 3px; font-size: 13px; color: #333; outline: none; }
-    .filter-input select:focus { border-color: var(--primary-color); }
+    /* --- Layout Dashboard --- */
+    .dashboard-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 30px 20px;
+    }
 
-    .table-responsive { overflow-x: auto; overflow-y: auto; max-height: 65vh; border: 1px solid var(--border-color); border-radius: 4px; }
-    table { width: 100%; border-collapse: collapse; }
-    th { background-color: var(--primary-color); color: white; position: sticky; top: 0; z-index: 10; text-align: center; padding: 10px 8px; font-weight: normal; font-size: 13px; border-right: 1px solid rgba(255, 255, 255, 0.2); }
+    /* --- Header & Logo --- */
+    .header-card {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      padding: 25px 30px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+      margin-bottom: 25px;
+      display: flex;
+      align-items: center;
+      gap: 25px;
+      border-top: 4px solid var(--primary-color);
+    }
+
+    .bps-logo {
+      width: 90px;
+      height: auto;
+      flex-shrink: 0;
+    }
+
+    .header-content h1 {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--primary-color);
+      margin: 0 0 5px 0;
+      line-height: 1.3;
+    }
+
+    .header-content h2 {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin: 0 0 10px 0;
+    }
+
+    .header-content p {
+      margin: 0;
+      color: var(--text-muted);
+      font-size: 13px;
+      line-height: 1.5;
+      max-width: 800px;
+    }
+
+    /* --- Card Container untuk Filter & Tabel --- */
+    .card {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      padding: 20px 25px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+      margin-bottom: 20px;
+      border: 1px solid var(--border-color);
+    }
+
+    /* --- Filter Section --- */
+    .filter-header {
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 15px;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .filter-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 15px;
+    }
+
+    .filter-item {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .filter-label {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .filter-input select {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      font-size: 14px;
+      color: var(--text-main);
+      font-family: 'Inter', sans-serif;
+      background-color: #fff;
+      cursor: pointer;
+      outline: none;
+      transition: all 0.2s;
+    }
+
+    .filter-input select:focus { 
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(0, 86, 179, 0.1);
+    }
+
+    /* --- Table Styles --- */
+    .table-responsive { 
+      overflow-x: auto; 
+      overflow-y: auto; 
+      max-height: 60vh; 
+      border-radius: var(--radius); 
+      border: 1px solid var(--border-color);
+    }
+
+    table { 
+      width: 100%; 
+      border-collapse: collapse; 
+      background-color: var(--card-bg);
+    }
+
+    th { 
+      background-color: var(--primary-color); 
+      color: white; 
+      position: sticky; 
+      top: 0; 
+      z-index: 10; 
+      text-align: center; 
+      padding: 14px 10px; 
+      font-weight: 600; 
+      font-size: 13px; 
+      border-right: 1px solid rgba(255, 255, 255, 0.1); 
+      letter-spacing: 0.3px;
+    }
     th:last-child { border-right: none; }
-    td { padding: 8px 10px; border-bottom: 1px solid var(--border-color); border-right: 1px solid var(--border-color); vertical-align: top; word-wrap: break-word; white-space: normal; line-height: 1.4; }
+    
+    td { 
+      padding: 12px 12px; 
+      border-bottom: 1px solid var(--border-color); 
+      border-right: 1px solid var(--border-color); 
+      vertical-align: top; 
+      word-wrap: break-word; 
+      white-space: normal; 
+      line-height: 1.5;
+      font-size: 13px;
+    }
     td:last-child { border-right: none; }
-    tr:nth-child(even) td { background-color: var(--primary-light); }
+    
+    tr:nth-child(even) td { background-color: #f8fafc; }
     tr:nth-child(odd) td { background-color: #ffffff; }
-    tr:hover td { background-color: #F8BBD0; }
+    tr:hover td { background-color: var(--primary-light); }
 
-    .highlight-rtl { background-color: #F8BBD0 !important; color: #880E4F !important; font-weight: 600 !important; border-left: 2px solid var(--primary-color) !important; border-right: 2px solid var(--primary-color) !important; }
-    .highlight-rtl-header { background-color: #AD144D !important; font-weight: bold; border-left: 2px solid #FF4081 !important; border-right: 2px solid #FF4081 !important; }
+    /* Highlight RTL (Menggunakan warna yang Anda definisikan sebelumnya) */
+    .highlight-rtl { 
+      background-color: var(--secondary-light) !important; 
+      color: #880E4F !important; 
+      font-weight: 600 !important; 
+      border-left: 2px solid var(--secondary-color) !important; 
+      border-right: 2px solid var(--secondary-color) !important; 
+    }
+    .highlight-rtl-header { 
+      background-color: #AD144D !important; 
+      font-weight: 700 !important; 
+      border-left: 2px solid #FF4081 !important; 
+      border-right: 2px solid #FF4081 !important; 
+    }
 
+    /* Table Column Widths */
     th:nth-child(1), td:nth-child(1) { min-width: 180px; max-width: 220px; } 
     th:nth-child(2), td:nth-child(2) { min-width: 180px; max-width: 220px; } 
     th:nth-child(3), td:nth-child(3) { min-width: 180px; max-width: 220px; } 
@@ -51,53 +215,112 @@
     th:nth-child(6), td:nth-child(6), th:nth-child(7), td:nth-child(7), th:nth-child(8), td:nth-child(8) { min-width: 200px; max-width: 300px; } 
     th:nth-child(9), td:nth-child(9) { min-width: 120px; } 
     th:nth-child(10), td:nth-child(10) { min-width: 100px; text-align: center; } 
-    th:nth-child(11), td:nth-child(11), th:nth-child(12), td:nth-child(12), th:nth-child(13), td:nth-child(13) { min-width: 100px; text-align: center; vertical-align: middle; }
+    th:nth-child(11), td:nth-child(11), th:nth-child(12), td:nth-child(12), th:nth-child(13), td:nth-child(13) { min-width: 110px; text-align: center; vertical-align: middle; }
 
-    .btn-link { display: inline-block; padding: 4px 8px; border: 1px solid var(--primary-color); color: var(--primary-color); background-color: transparent; text-decoration: none; border-radius: 3px; font-size: 12px; font-weight: bold; transition: all 0.2s; white-space: nowrap; }
-    .btn-link:hover { background-color: var(--primary-color); color: white; }
-    .loading { text-align: left; font-size: 14px; color: #666; padding: 20px 0; font-style: italic; }
+    /* Buttons & Status */
+    .btn-link { 
+      display: inline-block; 
+      padding: 6px 12px; 
+      border: 1px solid var(--primary-color); 
+      color: var(--primary-color); 
+      background-color: transparent; 
+      text-decoration: none; 
+      border-radius: 4px; 
+      font-size: 12px; 
+      font-weight: 600; 
+      transition: all 0.2s ease; 
+      white-space: nowrap; 
+    }
+    .btn-link:hover { 
+      background-color: var(--primary-color); 
+      color: white; 
+      box-shadow: 0 2px 4px rgba(0, 86, 179, 0.2);
+    }
+    
+    /* Loading Indicator */
+    .loading-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 50px 0;
+      color: var(--text-muted);
+    }
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 4px solid var(--border-color);
+      border-top: 4px solid var(--primary-color);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-bottom: 15px;
+    }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+    /* Media Query for Mobile */
+    @media (max-width: 768px) {
+      .header-card { flex-direction: column; text-align: center; }
+      .header-content p { text-align: justify; }
+    }
   </style>
 </head>
 <body>
 
-  <div>
-    <div class="app-title">Monitoring Bukti Dukung Rencana Tindak Lanjut Capaian Kinerja Triwulanan</div>
-    <div class="app-subtitle">Satker : BPS Kabupaten Lombok Barat</div>
-  </div>
+  <div class="dashboard-container">
+    
+    <header class="header-card">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/0/01/Badan_Pusat_Statistik_Logo.svg" alt="Logo BPS" class="bps-logo">
+      <div class="header-content">
+        <h1>Monitoring Bukti Dukung Rencana Tindak Lanjut</h1>
+        <h2>Capaian Kinerja Triwulanan — Satker: BPS Kabupaten Lombok Barat</h2>
+        <p>Aplikasi ini dikembangkan untuk memfasilitasi pemantauan, evaluasi, dan penyediaan bukti dukung terhadap pelaksanaan Rencana Tindak Lanjut (RTL) secara transparan dan akuntabel di lingkungan Badan Pusat Statistik Kabupaten Lombok Barat.</p>
+      </div>
+    </header>
 
-  <div class="filter-container" id="filterContainer">
-    <div class="filter-row">
-      <div class="filter-label">Tahun</div>
-      <div class="filter-input"><select id="filterTahun" onchange="handleFilterChange(1)"></select></div>
+    <div id="loading" class="card loading-container">
+      <div class="spinner"></div>
+      <div style="font-weight: 500;">Menghubungkan ke database dan mengambil data dari server...</div>
     </div>
-    <div class="filter-row">
-      <div class="filter-label">Triwulan</div>
-      <div class="filter-input"><select id="filterTriwulan" onchange="handleFilterChange(2)"></select></div>
-    </div>
-    <div class="filter-row">
-      <div class="filter-label">Tujuan</div>
-      <div class="filter-input"><select id="filterTujuan" onchange="handleFilterChange(3)"></select></div>
-    </div>
-    <div class="filter-row">
-      <div class="filter-label">Sasaran</div>
-      <div class="filter-input"><select id="filterSasaran" onchange="handleFilterChange(4)"></select></div>
-    </div>
-    <div class="filter-row">
-      <div class="filter-label">Indikator Kinerja</div>
-      <div class="filter-input"><select id="filterIndikator" onchange="handleFilterChange(5)"></select></div>
-    </div>
-  </div>
 
-  <div id="loading" class="loading">Mengambil data dari server...</div>
+    <div id="filterContainer" class="card" style="display: none;">
+      <div class="filter-header">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></svg>
+        Filter Data
+      </div>
+      <div class="filter-grid">
+        <div class="filter-item">
+          <div class="filter-label">Tahun</div>
+          <div class="filter-input"><select id="filterTahun" onchange="handleFilterChange(1)"></select></div>
+        </div>
+        <div class="filter-item">
+          <div class="filter-label">Triwulan</div>
+          <div class="filter-input"><select id="filterTriwulan" onchange="handleFilterChange(2)"></select></div>
+        </div>
+        <div class="filter-item">
+          <div class="filter-label">Tujuan</div>
+          <div class="filter-input"><select id="filterTujuan" onchange="handleFilterChange(3)"></select></div>
+        </div>
+        <div class="filter-item">
+          <div class="filter-label">Sasaran</div>
+          <div class="filter-input"><select id="filterSasaran" onchange="handleFilterChange(4)"></select></div>
+        </div>
+        <div class="filter-item">
+          <div class="filter-label">Indikator Kinerja</div>
+          <div class="filter-input"><select id="filterIndikator" onchange="handleFilterChange(5)"></select></div>
+        </div>
+      </div>
+    </div>
 
-  <div class="table-responsive" id="tableWrapper" style="display: none;">
-    <table id="dataTable">
-      <thead id="tableHead"></thead>
-      <tbody id="tableBody"></tbody>
-    </table>
-  </div>
+    <div id="tableWrapper" class="card" style="display: none; padding: 15px;">
+      <div class="table-responsive">
+        <table id="dataTable">
+          <thead id="tableHead"></thead>
+          <tbody id="tableBody"></tbody>
+        </table>
+      </div>
+    </div>
 
-  <script>
+  </div> <script>
     // MASUKKAN URL APPS SCRIPT ANDA DI SINI
     const API_URL = "https://script.google.com/macros/s/AKfycbwz5_mD31fV8TLle2WUKaIsHQwPj73IEYn0YLZKshiy0uSNoyvFWba1ORvQZfpI7mrJ/exec";
 
@@ -118,7 +341,7 @@
         .then(response => response.json())
         .then(data => processData(data))
         .catch(error => {
-          document.getElementById('loading').innerHTML = "Gagal memuat data. Pastikan URL API benar dan Sheet memiliki akses publik.";
+          document.getElementById('loading').innerHTML = "<div style='color:red;'>Gagal memuat data. Pastikan URL API benar dan Sheet memiliki akses publik.</div>";
           console.error("Error fetching data: ", error);
         });
     };
